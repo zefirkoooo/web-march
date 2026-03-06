@@ -1,0 +1,20 @@
+FROM node:22-alpine
+
+WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@latest --activate
+COPY package.json pnpm-lock.yaml* ./
+RUN if [ -f pnpm-lock.yaml ]; then \
+      pnpm install --frozen-lockfile; \
+    else \
+      pnpm install; \
+    fi
+COPY . .
+RUN sed -i 's/const nextConfig = {/const nextConfig = {\n  output: "standalone",/' next.config.mjs
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN pnpm build
+RUN pnpm prune --prod
+ENV NODE_ENV=production
+ENV HOSTNAME="0.0.0.0"
+ENV PORT=3000
+EXPOSE 3000
+CMD ["pnpm", "start"]
