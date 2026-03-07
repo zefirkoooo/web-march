@@ -13,8 +13,13 @@
 
 1) Билд сборки и запуск
 ```
-docker build -t march 
-docker run -p 3000:3000 march
+docker build -t march .
+docker run -d \
+  --name web-march \
+  --restart unless-stopped \
+  -p 3000:3000 \
+  --env-file /root/web-march/.env \
+  march
 ```
 
 ___
@@ -27,7 +32,7 @@ ___
 
 1) Клонирование проекта
 ```
-git clone git@github.com:zefirkoooo/web-march.git
+git clone https://github.com/zefirkoooo/web-march.git
 cd web-march
 ```
 
